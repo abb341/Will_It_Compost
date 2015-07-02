@@ -7,11 +7,24 @@
 //
 
 import UIKit
+import Bond
 
 class ItemTableViewCell: UITableViewCell {
     @IBOutlet weak var itemImageView: UIImageView!
     @IBOutlet weak var itemLabel: UILabel!
     @IBOutlet weak var isCompostableLabel: UILabel!
+    
+    var item:Item? {
+        didSet {
+            // 1
+            if let item = item {
+                //2
+                // bind the image of the post to the 'itemImage' view
+                item.image ->> itemImageView
+                //itemLabel = item.nameLabel
+            }
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

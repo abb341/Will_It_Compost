@@ -8,14 +8,15 @@
 
 import Foundation
 import Parse
+import Bond
 
 class Item : PFObject, PFSubclassing {
     
     @NSManaged var imageFile: PFFile?
-    @NSManaged var productName: PFObject?
-    @NSManaged var isCompostable: PFObject?
+    @NSManaged var productName: String
+    @NSManaged var isCompostable: String
     
-    var image: UIImage?
+    var image: Dynamic<UIImage?> = Dynamic(nil)
     
     static func parseClassName() -> String {
         return "Item"
@@ -30,6 +31,18 @@ class Item : PFObject, PFSubclassing {
         dispatch_once(&onceToken) {
             // inform Parse about this subclass
             self.registerSubclass()
+        }
+    }
+    
+    func downloadImage() {
+        // if image is not downloaded yet, get it
+        if (image.value == nil) {
+            imageFile?.getDataInBackgroundWithBlock { (data: NSData?, error: NSError?) -> Void in
+                if let data = data {
+                    let image = UIImage(data: data, scale:1.0)!
+                    self.image.value = image
+                }
+            }
         }
     }
 

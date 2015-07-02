@@ -11,15 +11,40 @@ import Parse
 
 class SearchViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     var items: [Item] = []
+    //var selectedItem: Item?
+    
+    // In Default Mode all Notes are displayed, in search mode only a filtered subset
+    enum State {
+        case DefaultMode
+        case SearchMode
+    }
+    
+    var state: State = .DefaultMode {
+        didSet {
+            // update notes and search bar whenever State changes
+            switch (state) {
+            case .DefaultMode:
+                //searchBar.resignFirstResponder()
+                searchBar.text = ""
+                searchBar.showsCancelButton = false
+            case .SearchMode:
+                let searchText = searchBar?.text ?? ""
+                searchBar.setShowsCancelButton(true, animated: true)
+                //items = searchItems(searchText)
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        //self.tabBarController.delegate = self
+        tableView.delegate = self
         tableView.dataSource = self
+        searchBar.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,13 +53,20 @@ class SearchViewController: UIViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
+        // Item Image Query
         let itemsQuery = PFQuery(className: "Item")
+        //Other Queries
+        let productNameQuery = PFQuery(className: "Item")
+        productNameQuery.whereKey("productName", notEqualTo: "")
         
-        itemsQuery.findObjectsInBackgroundWithBlock {(result: [AnyObject]?, error: NSError?) -> Void in
+        let query = PFQuery.orQueryWithSubqueries([itemsQuery, productNameQuery])
+        query.findObjectsInBackgroundWithBlock {(result: [AnyObject]?, error: NSError?) -> Void in
             // MARK: Need to take results as an array of Items?
             self.items = result as? [Item] ?? []
-            self.tableView.reloadData()
+                
+                self.tableView.reloadData()
         }
+    
     }
     
 
@@ -50,6 +82,8 @@ class SearchViewController: UIViewController {
 
 }
 
+// MARK: Extensions
+
 extension SearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // 1
@@ -59,11 +93,11 @@ extension SearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: indexPath) as! ItemTableViewCell
         
-        // cell.itemImageView = Parse Image
-        // cell.itemLabel = Parse String
-        // cell.isCompostableLabel = Parse Boolean to String
-        cell.itemLabel!.text = "Item"
-        cell.isCompostableLabel!.text = "Yes"
+        let item = items[indexPath.row]
+        item.downloadImage()
+        cell.itemLabel!.text = item.productName
+        cell.isCompostableLabel.text = item.isCompostable
+        cell.item = item
         
         return cell
     }
@@ -71,4 +105,30 @@ extension SearchViewController: UITableViewDataSource {
     /*func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
     }*/
+}
+
+extension SearchViewController: UITableViewDelegate {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        //let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: indexPath) as! ItemTableViewCell
+        //let item = items[indexPath.row]
+        self.performSegueWithIdentifier("ShowItem", sender: self)
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+        state = .SearchMode
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        searchBar.text = ""
+        searchBar.setShowsCancelButton(false, animated: true)
+        state = .DefaultMode
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        //ParseHelper.searchItems(searchText, completionBlock:updateList)
+    }
 }
