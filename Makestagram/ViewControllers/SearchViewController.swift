@@ -8,13 +8,18 @@
 
 import UIKit
 import Parse
+import ConvenienceKit
 
-class SearchViewController: UIViewController {
+class SearchViewController: UIViewController, TimelineComponentTarget{
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var items: [Item] = []
-    //var selectedItem: Item?
+    //var items: [Item] = []
+    var selectedItem: Item?
+    var timelineComponent: TimelineComponent<Item, SearchViewController>!
+    
+    let defaultRange = 0...5
+    let additionalRangeSize = 6
     
     // In Default Mode all Notes are displayed, in search mode only a filtered subset
     enum State {
@@ -42,6 +47,7 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        timelineComponent = TimelineComponent(target: self)
         tableView.delegate = self
         tableView.dataSource = self
         searchBar.delegate = self
@@ -53,32 +59,35 @@ class SearchViewController: UIViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-        // Item Image Query
-        let itemsQuery = PFQuery(className: "Item")
-        //Other Queries
-        let productNameQuery = PFQuery(className: "Item")
-        productNameQuery.whereKey("productName", notEqualTo: "")
+        super.viewDidAppear(animated)
         
-        let query = PFQuery.orQueryWithSubqueries([itemsQuery, productNameQuery])
-        query.findObjectsInBackgroundWithBlock {(result: [AnyObject]?, error: NSError?) -> Void in
-            // MARK: Need to take results as an array of Items?
-            self.items = result as? [Item] ?? []
-                
-                self.tableView.reloadData()
-        }
+        timelineComponent.loadInitialIfRequired()    }
     
+    func loadInRange(range: Range<Int>, completionBlock: ([Item]?) -> Void) {
+        // 1
+        ParseHelper.searchRequestforCurrentUser(range) {
+            (result: [AnyObject]?, error: NSError?) -> Void in
+            // 2
+            let items = result as? [Item] ?? []
+            // 3
+            completionBlock(items)
+        }
     }
     
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        if segue.identifier == "ShowItem" {
+            var destViewController: ItemDisplayViewController = segue.destinationViewController as! ItemDisplayViewController
+            destViewController.labelText = selectedItem!.productName
+        }
     }
-    */
+    
 
 }
 
@@ -86,14 +95,13 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // 1
-        return items.count
+        return timelineComponent.content.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: indexPath) as! ItemTableViewCell
         
-        let item = items[indexPath.row]
+        let item = timelineComponent.content[indexPath.row]
         item.downloadImage()
         cell.itemLabel!.text = item.productName
         cell.isCompostableLabel.text = item.isCompostable
@@ -102,16 +110,17 @@ extension SearchViewController: UITableViewDataSource {
         return cell
     }
     
-    /*func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
-    }*/
 }
 
 extension SearchViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         //let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: indexPath) as! ItemTableViewCell
-        //let item = items[indexPath.row]
+        selectedItem = timelineComponent.content[indexPath.row]
         self.performSegueWithIdentifier("ShowItem", sender: self)
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        timelineComponent.targetWillDisplayEntry(indexPath.row)
     }
 }
 

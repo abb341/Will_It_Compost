@@ -16,12 +16,16 @@ class ItemTableViewCell: UITableViewCell {
     
     var item:Item? {
         didSet {
-            // 1
+            // free memory of image stored with item that is no longer displayed
+            if let oldValue = oldValue where oldValue != item {
+                itemImageView.designatedBond.unbindAll()
+                if (oldValue.image.bonds.count == 0) {
+                    oldValue.image.value = nil
+                }
+            }
             if let item = item {
-                //2
                 // bind the image of the post to the 'itemImage' view
                 item.image ->> itemImageView
-                //itemLabel = item.nameLabel
             }
         }
     }

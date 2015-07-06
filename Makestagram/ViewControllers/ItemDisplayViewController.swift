@@ -9,6 +9,8 @@
 import UIKit
 
 class ItemDisplayViewController: UIViewController {
+    @IBOutlet weak var selectedItem: UILabel!
+    var labelText = String()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +21,10 @@ class ItemDisplayViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        selectedItem.text = labelText
     }
     
 
