@@ -10,7 +10,10 @@ import UIKit
 
 class ItemDisplayViewController: UIViewController {
     @IBOutlet weak var selectedItem: UILabel!
+    @IBOutlet weak var itemDesc: UILabel!
+    
     var labelText = String()
+    var descText = String()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +28,7 @@ class ItemDisplayViewController: UIViewController {
     
     override func viewDidAppear(animated: Bool) {
         selectedItem.text = labelText
+        //itemDesc.text = descText
     }
     
 

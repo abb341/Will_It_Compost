@@ -15,6 +15,7 @@ class Item : PFObject, PFSubclassing {
     @NSManaged var imageFile: PFFile?
     @NSManaged var productName: String
     @NSManaged var isCompostable: String
+    @NSManaged var Description: String
     
     var image: Dynamic<UIImage?> = Dynamic(nil)
     
