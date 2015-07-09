@@ -131,7 +131,7 @@ class SearchViewController: UIViewController, TimelineComponentTarget{
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+   /* override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         if segue.identifier == "ShowItem" {
@@ -140,7 +140,7 @@ class SearchViewController: UIViewController, TimelineComponentTarget{
             //destViewController.descText = selectedItem!.Description
             
         }
-    }
+    }*/
     
 
 }
@@ -181,7 +181,7 @@ extension SearchViewController: UITableViewDataSource {
 }
 
 extension SearchViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    /*func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if state == .SearchMode {
             selectedItem = searchedItems![indexPath.row]
         }
@@ -189,7 +189,7 @@ extension SearchViewController: UITableViewDelegate {
             selectedItem = timelineComponent.content[indexPath.row]
         }
         self.performSegueWithIdentifier("ShowItem", sender: self)
-    }
+    }*/
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         timelineComponent.targetWillDisplayEntry(indexPath.row)
