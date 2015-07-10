@@ -358,9 +358,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		62C8C1DF1B06BD6500DC3EA7 /* Makestagram */ = {
+		62C8C1DF1B06BD6500DC3EA7 /* Compost? */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 62C8C1FF1B06BD6500DC3EA7 /* Build configuration list for PBXNativeTarget "Makestagram" */;
+			buildConfigurationList = 62C8C1FF1B06BD6500DC3EA7 /* Build configuration list for PBXNativeTarget "Compost?" */;
 			buildPhases = (
 				62C8C1DC1B06BD6500DC3EA7 /* Sources */,
 				62C8C1DD1B06BD6500DC3EA7 /* Frameworks */,
@@ -373,7 +373,7 @@
 				62A07D201B1E56C8001F6916 /* PBXTargetDependency */,
 				62A07D711B1F7FB9001F6916 /* PBXTargetDependency */,
 			);
-			name = Makestagram;
+			name = "Compost?";
 			productName = Makestagram;
 			productReference = 62C8C1E01B06BD6500DC3EA7 /* Makestagram.app */;
 			productType = "com.apple.product-type.application";
@@ -438,7 +438,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				62C8C1DF1B06BD6500DC3EA7 /* Makestagram */,
+				62C8C1DF1B06BD6500DC3EA7 /* Compost? */,
 				62C8C1F41B06BD6500DC3EA7 /* MakestagramTests */,
 			);
 		};
@@ -562,7 +562,7 @@
 		};
 		62C8C1F71B06BD6500DC3EA7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 62C8C1DF1B06BD6500DC3EA7 /* Makestagram */;
+			target = 62C8C1DF1B06BD6500DC3EA7 /* Compost? */;
 			targetProxy = 62C8C1F61B06BD6500DC3EA7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -751,7 +751,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		62C8C1FF1B06BD6500DC3EA7 /* Build configuration list for PBXNativeTarget "Makestagram" */ = {
+		62C8C1FF1B06BD6500DC3EA7 /* Build configuration list for PBXNativeTarget "Compost?" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				62C8C2001B06BD6500DC3EA7 /* Debug */,
